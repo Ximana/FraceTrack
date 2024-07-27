@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+<!--Head-->
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/listarPessoa.css') }}" />
+<title>Listar Usuários</title>
+{% endblock %}
+
+<!--Corpo da pagina-->
+{% block content %}
+<header class="row">
+  <h1 class="h5">Lista de Usuários</h1>
+
+  <div class="btn-group col-md-6" role="group" aria-label="Basic outlined example">
+    <!-- Botao do modal de cadastro -->
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalCadastrarPessoa">
+      Novo Usuário
+    </button>
+  </div>
+  <div class="col-md-6">
+    <form class="row" action="">
+      <div class="col-11 ">
+        <input class="form-control border" type="text" placeholder="Insira o nome ou BI">
+      </div>
+      <button class="col-1 bg-success"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
+</header>
+
+<main class="row">
+  <div class="col-12">
+    <table class="table table-striped table-responsive mt-2">
+      <thead>
+        <tr class="table-dark text-light">
+          <td colspan="5">Lista de Usuários</td>
+        </tr>
+        <tr class="table-success">
+          <th>Nome</th>
+          <th>Número do BI</th>
+          <th>Email</th>
+          <th>Tipo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for usuario in usuarios_paginados.items %}
+        <tr>
+          <td>{{ usuario.nome }}</td>
+          <td>{{ usuario.numero_bi }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>{{ usuario.tipo }}</td>
+          <td>
+            <!-- Botão para abrir o modal de confirmação -->
+            <button type="button" class="fa fa-trash btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="{{ usuario.id }}" data-nome="{{ usuario.nome }}"></button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item {% if not usuarios_paginados.has_prev %}disabled{% endif %}">
+          <a class="page-link text-dark" href="{{ url_for('usuarios.listar_usuarios', page=usuarios_paginados.prev_num) }}" tabindex="-1">Anterior</a>
+        </li>
+        {% for page_num in usuarios_paginados.iter_pages() %}
+        {% if page_num %}
+        <li class="page-item {% if page_num == usuarios_paginados.page %}active{% endif %}">
+          <a class="page-link text-dark {% if page_num == usuarios_paginados.page %}bg-success{% endif %}" href="{{ url_for('usuarios.listar_usuarios', page=page_num) }}">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+        {% endfor %}
+        <li class="page-item {% if not usuarios_paginados.has_next %}disabled{% endif %}">
+          <a class="page-link text-dark" href="{{ url_for('usuarios.listar_usuarios', page=usuarios_paginados.next_num) }}">Próximo</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</main>
+
+ <!-- Modal Adicionar Pessoa perdida-->
+ {% include 'usuarios/adicionarModal.html' %}
+
+<!-- Modal de Confirmação -->
+{% include 'usuarios/modalConfirmacao.html' %}
+
+
+<!--Arquivos Javascript-->
+{% block scriptJS %}
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
+{% endblock %}
+{% endblock %}

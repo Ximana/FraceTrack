@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+<!--Head-->
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/listarPessoa.css') }}" />
+<title>Detalhes da pessoa</title>
+{% endblock %}
+
+<!--Corpo da pagina-->
+{% block content %}
+<header class="row">
+  <h1 class="h5">Detalhes</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+    <strong>Alerta!</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</header>
+
+<main class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Nome</label>
+          <span class="form-control">{{ pessoa.nome }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Númedo do BI</label>
+          <span class="form-control">{{ pessoa.numero_bi }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Data Nascimento</label>
+          <span class="form-control">{{ pessoa.data_nascimento.strftime('%d/%m/%Y') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Data Desaparecimento</label>
+          <span class="form-control">{{ pessoa.data_desaparecimento.strftime('%d/%m/%Y') }}</span>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="row h-100">
+          <div class="col-8">
+            <div class="form-group">
+              <label>Nome do pai</label>
+              <span class="form-control">{{ pessoa.nome_pai }}</span>
+            </div>
+
+            <div class="form-group">
+              <label>Nome da mãe</label>
+              <span class="form-control">{{ pessoa.nome_mae }}</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <!-- Imagem do Perfil -->
+            <a target="_blank" href="{{ url_for('static', filename='img/pessoasDesaparecidas/' ~ pessoa.imagem) }}">
+              <img src="{{ url_for('static', filename='img/pessoasDesaparecidas/' ~ pessoa.imagem) }}" alt="Imagem"
+                   class="img-fluid img-thumbnail" width="124" />
+            </a>
+            <!-- Fim Imagem do Perfil -->
+          </div>
+
+          <div class="form-group col-12">
+            <label for="descricao">Descrição</label>
+            <textarea class="form-control" id="descricao" cols="" rows="4" readonly>{{ pessoa.descricao }}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 mt-3">
+      <!-- Botão para abrir modal de edição -->
+      <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarPessoa">
+        Editar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Editar Pessoa perdida -->
+  {% include 'pessoas/editarModal.html' %}
+</main>
+
+<!-- Arquivos Javascript -->
+{% block scriptJS %}
+<script src="{{ url_for('static', filename='js/listarPessoa.js') }}"></script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/estilo.css') }}" rel="stylesheet">
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Menu Lateral -->
+        <nav class="bg-dark border-end" id="sidebar">
+            <div class="sidebar-heading text-center">
+                <h4><a class="" href="{{ url_for('index.index') }}">FaceTrack</a></h4>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('pessoas.listar_pessoas') }}">
+                        <i class="fas fa-plus"></i> Pessoas Desaparecidas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('detecoes.listar_detecoes') }}">
+                        <i class="fas fa-search"></i> Detecções
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('notificacoes.listar_notificacoes') }}">
+                        <i class="fas fa-bell"></i> Notificações
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('historico.listar_historico') }}">
+                        <i class="fas fa-history"></i> Histórico
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('usuarios.listar_usuarios') }}">
+                        <i class="fas fa-users"></i> Usuários
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('cameras.view') }}">
+                        <i class="fas fa-users"></i> Camera
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index.sobre') }}">
+                        <i class="fas fa-info-circle"></i> Sobre
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index.ajuda') }}">
+                        <i class="fas fa-question-circle"></i> Ajuda
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login.logout') }}">
+                        <i class="fas fa-sign-out"></i> Sair
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Barra do topo -->
+        <div id="page-content-wrapper">
+            <!-- Topo -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <span class="me-2">
+                        <strong>FaceTrack:</strong> Rastreamento inteligente para um mundo mais seguro
+                    </span>
+
+                    <button class="btn btn-success d-lg-none" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand ms-auto">
+                        <i class="fas fa-tachometer-alt fa-lg"></i>
+                    </span>
+                    <!-- Notificações -->
+                    <!-- Notificacoes -->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" id="notificationDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell"></i> 
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                            {% for notificacao in notificacoes %}
+                            <li><a class="dropdown-item" href="#">{{ notificacao.mensagem }}</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="#">Nenhuma notificação</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Fim Notificacoes-->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i> {{ session.get('user_name', 'Usuário') }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="#">Configurações</a></li>
+                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('login.logout') }}">Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Offcanvas Menu (para dispositivos móveis) -->
+            <div class="offcanvas offcanvas-start bg-dark" tabindex="-1" id="offcanvasMenu"
+                aria-labelledby="offcanvasMenuLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title text-light" id="offcanvasMenuLabel">FaceTrack</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-plus"></i> Pessoas Desaparecidas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-search"></i> Detecções
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-bell"></i> Notificações
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-history"></i> Histórico
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-users"></i> Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-info-circle"></i> Sobre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-question-circle"></i> Ajuda
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conteúdo Principal -->
+            <div class="container-fluid mt-4">
+                <!-- Mensagens flash -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <strong>Alerta!</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <!-- Corpo da página -->
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    {% block scriptJS %}
+    {% endblock %}
+</body>
+
+</html>

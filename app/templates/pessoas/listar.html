@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+<!--Head-->
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/listarPessoa.css') }}" />
+<title>Pessoas Desaparecidas</title>
+{% endblock %}
+
+<!--Corpo da pagina-->
+{% block content %}
+<header class="row">
+  <h1 class="h5">Pessoas Desaparecidas</h1>
+
+  <div class="btn-group col-md-6" role="group" aria-label="Basic outlined example">
+    <!-- Botao do modal de cadastro -->
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalCadastrarPessoa">
+      Novo caso de perda
+    </button>
+  </div>
+  <div class="col-md-6">
+    <form class="row" action="">
+      <div class="col-11">
+        <input class="form-control border" type="text" placeholder="Insira o nome ou BI">
+      </div>
+      <button class="col-1 bg-success"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
+</header>
+
+<main class="row">
+  <div class="col-12">
+    <table class="table table-striped table-responsive mt-2">
+      <thead>
+        <tr class="">
+          <td class="bg-dark text-light" colspan="9">Lista de Pessoas Desaparecidas</td>
+        </tr>
+        <tr class="table-success">
+          <th>Nome</th>
+          <th>Data Nascimento</th>
+          <th>Data Desaparecimento</th>
+          <th>Nome do pai</th>
+          <th>Nome da mãe</th>
+          <th>Descrição</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pessoa in pessoas.items %}
+        <tr>
+          <td>{{ pessoa.nome }}</td>
+          <td>{{ pessoa.data_nascimento.strftime('%d/%m/%Y') }}</td>
+          <td>{{ pessoa.data_desaparecimento.strftime('%d/%m/%Y') }}</td>
+          <td>{{ pessoa.nome_pai }}</td>
+          <td>{{ pessoa.nome_mae }}</td>
+          <td>{{ pessoa.descricao[:50] }}...</td>
+          <td>
+            
+            
+            <a href="{{ url_for('pessoas.detalhes_pessoa', id=pessoa.id) }}" class="btn btn-primary btn-sm fa fa-eye"></a>
+            <a href="" class="btn btn-warning btn-sm fa fa-edit"></a>
+            <a href="" class="btn btn-danger btn-sm fa fa-trash"></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <nav aria-label="Page navigation mt-4">
+      <ul class="pagination justify-content-center">
+        {% if pessoas.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('pessoas.listar_pessoas', page=pessoas.prev_num) }}">Anterior</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Anterior</a>
+        </li>
+        {% endif %}
+
+        {% for page_num in pessoas.iter_pages(left_edge=2, right_edge=2, left_current=1, right_current=1) %}
+          {% if page_num %}
+            {% if page_num == pessoas.page %}
+            <li class="page-item active">
+              <a class="page-link">{{ page_num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('pessoas.listar_pessoas', page=page_num) }}">{{ page_num }}</a>
+            </li>
+            {% endif %}
+          {% else %}
+          <li class="page-item disabled">
+            <a class="page-link">...</a>
+          </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if pessoas.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('pessoas.listar_pessoas', page=pessoas.next_num) }}">Próximo</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Próximo</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <!-- Modal Adicionar Pessoa perdida-->
+    {% include 'pessoas/adicionarModal.html' %}
+  </div>
+</main>
+
+<!--Arquivos Javascript-->
+{% block scriptJS %}
+<script src="{{ url_for('static', filename='js/listarPessoa.js') }}"></script>
+{% endblock %}
+{% endblock %}

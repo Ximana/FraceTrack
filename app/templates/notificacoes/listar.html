@@ -1,0 +1,35 @@
+Listar Notificacoes{% extends "base.html" %}
+
+<!--Head-->
+{% block head %}
+
+<title>Inicio</title>>
+
+{% endblock %}
+
+<!--Corpo da pagina-->
+{% block content %}
+    <header>
+        <h1 class="h3">Bem-vindo ao Sistema de Reconhecimento Facial</h1>
+        
+    </header>
+    <main>
+        <p>Esta é a página inicial do sistema.</p>
+        <ul class="list-group">
+            {% for notificacao in notificacoes %}
+            <li class="list-group-item">
+                {{ notificacao.mensagem }} - <small>{{ notificacao.enviado_em.strftime('%d/%m/%Y %H:%M:%S') }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+        
+    </main>
+
+
+    <!--Arquivos Javascript-->
+    {% block scriptJS %}
+
+    
+    {% endblock %}
+    
+{% endblock %}

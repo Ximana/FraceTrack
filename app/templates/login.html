@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FaceTrack</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/estilo.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="text-center text-success mb-4"><i class="fas fa-user-circle"></i> FaceTrack Login</h2>
+        <form action="{{ url_for('login.login') }}" method="POST">
+            <!--Mensagens flash-->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <strong>Alerta!</strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            <div class="mb-3">
+                <label for="nomeusuario" class="form-label"><i class="fas fa-user"></i> Usuário</label>
+                <input type="text" class="form-control" id="nomeusuario" name="nomeusuario" placeholder="Insira o nome de usuário" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label"><i class="fas fa-lock"></i> Senha</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Insira a sua senha" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="#" class="text-success">Esqueceu a senha?</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

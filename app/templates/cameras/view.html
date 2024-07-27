@@ -1,0 +1,30 @@
+<!-- templates/cameras/view.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Camera Feed</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        .video-container {
+            text-align: center;
+            margin-top: 5px;
+        }
+        .video-container img {
+            width: 66%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container video-container">
+        <h1 class="h4">Camera</h1>
+        <img src="{{ url_for('cameras.video_feed') }}" alt="Live Camera Feed">
+    </div>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
