@@ -13,13 +13,13 @@ logger = logging.getLogger(__name__)
 def gen_frames():
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-        logger.error("Cannot open camera")
+        logger.error("Erro ao abrir a camera")
         return
     
     while True:
         success, frame = cap.read()
         if not success:
-            logger.error("Failed to read frame")
+            logger.error("Erro ao ler o frame")
             break
         else:
             ret, buffer = cv2.imencode('.jpg', frame)
@@ -32,10 +32,10 @@ def gen_frames():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@cameras_bp.route('/view')
-def view():
-    return render_template('cameras/view.html')
+@cameras_bp.route('/webcam')
+def webcam():
+    return render_template('cameras/webcam.html')
 
 @cameras_bp.route('/stop_camera')
 def stop_camera():
-    return "Camera stopped"
+    return "Camera parada"

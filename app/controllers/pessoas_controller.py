@@ -5,6 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 import uuid
 from flask_paginate import Pagination, get_page_parameter
+#from app.models.reconhecimento_facial import ReconhecimentoFacial
 
 pessoas_bp = Blueprint('pessoas', __name__, url_prefix='/pessoas')
 
@@ -59,13 +60,18 @@ def adicionar_pessoa():
         try:
             db.session.add(nova_pessoa)
             db.session.commit()
+
+            # Treinar o modelo de reconhecimento facial
+            #reconhecedor = ReconhecimentoFacial()
+            #reconhecedor.treinar_modelo(UPLOAD_FOLDER)
+
             flash('Pessoa desaparecida adicionada com sucesso!', 'success')
             return redirect(url_for('pessoas.listar_pessoas'))
         except Exception as e:
             db.session.rollback()
             flash(f'Erro ao adicionar pessoa desaparecida: {str(e)}', 'danger')
 
-    return render_template('pessoas/adicionar.html')
+    return redirect(url_for('pessoas.listar_pessoas'))
 
 @pessoas_bp.route('/detalhes/<int:id>')
 def detalhes_pessoa(id):
