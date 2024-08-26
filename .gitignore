@@ -1,1 +1,10 @@
-env/
+gitignore
+
+
+migrations/
+
+
+config.py
+
+
+__pycache__/

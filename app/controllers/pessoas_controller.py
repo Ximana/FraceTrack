@@ -5,7 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 import uuid
 from flask_paginate import Pagination, get_page_parameter
-#from app.models.reconhecimento_facial import ReconhecimentoFacial
+from app.models.reconhecimento_facial import ReconhecimentoFacial
 
 pessoas_bp = Blueprint('pessoas', __name__, url_prefix='/pessoas')
 
@@ -61,7 +61,7 @@ def adicionar_pessoa():
             db.session.add(nova_pessoa)
             db.session.commit()
 
-            # Treinar o modelo de reconhecimento facial
+            #Treinar o modelo de reconhecimento facial
             #reconhecedor = ReconhecimentoFacial()
             #reconhecedor.treinar_modelo(UPLOAD_FOLDER)
 
