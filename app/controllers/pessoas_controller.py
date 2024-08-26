@@ -7,6 +7,8 @@ import uuid
 from flask_paginate import Pagination, get_page_parameter
 from app.models.reconhecimento_facial import ReconhecimentoFacial
 
+from app.decorador import login_obrigatorio # decorador para secao obrigatoria
+
 pessoas_bp = Blueprint('pessoas', __name__, url_prefix='/pessoas')
 
 UPLOAD_FOLDER = 'app/static/img/pessoasDesaparecidas'
@@ -16,6 +18,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @pessoas_bp.route('/listar')
+@login_obrigatorio
 def listar_pessoas():
     # Obtendo o número da página atual (padrão é 1)
     page = request.args.get('page', 1, type=int)
@@ -26,6 +29,7 @@ def listar_pessoas():
     return render_template('pessoas/listar.html', pessoas=pessoas)
 
 @pessoas_bp.route('/adicionar', methods=['GET', 'POST'])
+@login_obrigatorio
 def adicionar_pessoa():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -74,11 +78,13 @@ def adicionar_pessoa():
     return redirect(url_for('pessoas.listar_pessoas'))
 
 @pessoas_bp.route('/detalhes/<int:id>')
+@login_obrigatorio
 def detalhes_pessoa(id):
     pessoa = PessoaDesaparecida.query.get_or_404(id)
     return render_template('pessoas/detalhes.html', pessoa=pessoa)
 
 @pessoas_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
+@login_obrigatorio
 def editar_pessoa(id):
     pessoa = PessoaDesaparecida.query.get_or_404(id)
 

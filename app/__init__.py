@@ -2,6 +2,9 @@ from flask import Flask, redirect, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+#importar outos arquivos
+from app.decorador import login_obrigatorio
+
 
 db = SQLAlchemy()
 migrate = Migrate()
