@@ -65,10 +65,6 @@ def adicionar_pessoa():
             db.session.add(nova_pessoa)
             db.session.commit()
 
-            #Treinar o modelo de reconhecimento facial
-            #reconhecedor = ReconhecimentoFacial()
-            #reconhecedor.treinar_modelo(UPLOAD_FOLDER)
-
             flash('Pessoa desaparecida adicionada com sucesso!', 'success')
             return redirect(url_for('pessoas.listar_pessoas'))
         except Exception as e:
@@ -121,3 +117,26 @@ def editar_pessoa(id):
         return redirect(url_for('pessoas.detalhes_pessoa', id=id))
 
     return render_template('pessoas/editar.html', pessoa=pessoa)
+
+@pessoas_bp.route('/remover/<int:id>', methods=['POST'])
+@login_obrigatorio
+def remover_pessoa(id):
+    pessoa = PessoaDesaparecida.query.get_or_404(id)
+    
+    try:
+        # Remover a imagem do diretório, se não for a imagem padrão
+        if pessoa.imagem != 'person_icon.png':
+            image_path = os.path.join(UPLOAD_FOLDER, pessoa.imagem)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+        # Remover a pessoa do banco de dados
+        db.session.delete(pessoa)
+        db.session.commit()
+
+        flash('Pessoa removida com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao remover pessoa: {str(e)}', 'danger')
+
+    return redirect(url_for('pessoas.listar_pessoas'))

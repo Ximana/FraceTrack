@@ -57,8 +57,12 @@
             
             
             <a href="{{ url_for('pessoas.detalhes_pessoa', id=pessoa.id) }}" class="btn btn-primary btn-sm fa fa-eye"></a>
-            <a href="" class="btn btn-warning btn-sm fa fa-edit"></a>
-            <a href="" class="btn btn-danger btn-sm fa fa-trash"></a>
+            <a href="{{ url_for('pessoas.editar_pessoa', id=pessoa.id) }}" class="btn btn-warning btn-sm fa fa-edit"></a>
+
+    <form action="{{ url_for('pessoas.remover_pessoa', id=pessoa.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger btn-sm fa fa-trash" onclick="return confirm('Tem certeza que deseja remover esta pessoa?');"></button>
+    </form>
+    
           </td>
         </tr>
         {% endfor %}
@@ -118,3 +122,4 @@
 <script src="{{ url_for('static', filename='js/listarPessoa.js') }}"></script>
 {% endblock %}
 {% endblock %}
+

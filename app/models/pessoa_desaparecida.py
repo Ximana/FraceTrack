@@ -15,3 +15,4 @@ class PessoaDesaparecida(db.Model):
     criado_em = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     atualizado_em = db.Column(db.DateTime, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     deteccoes = db.relationship('Deteccao', backref='pessoa', lazy=True)
+

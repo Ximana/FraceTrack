@@ -12,8 +12,12 @@ cameras_bp = Blueprint('cameras', __name__, url_prefix='/cameras')
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-reconhecimento_facial = ReconhecimentoFacial()
+reconhecimento_facial = None
 
+def init_reconhecimento_facial():
+    global reconhecimento_facial
+    reconhecimento_facial = ReconhecimentoFacial()
+    
 def gen_frames():
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -48,3 +52,4 @@ def webcam():
 @login_obrigatorio
 def stop_camera():
     return "Camera parada"
+

@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from .config import Config
 
 #importar outos arquivos
 from app.decorador import login_obrigatorio
@@ -20,7 +21,7 @@ from .controllers.detecoes_controller import detecoes_bp
 from .controllers.historico_controller import historico_bp
 from .controllers.notificacoes_controller import notificacoes_bp
 from .controllers.usuarios_controller import usuarios_bp
-from app.controllers.cameras_controller import cameras_bp
+from app.controllers.cameras_controller import cameras_bp, init_reconhecimento_facial
 
 def create_app():
     app = Flask(__name__)
@@ -47,5 +48,8 @@ def create_app():
             notificacoes = Notificacao.query.filter_by(usuario_id=user_id).order_by(Notificacao.enviado_em.desc()).limit(10).all()
             return dict(notificacoes=notificacoes)
         return dict(notificacoes=[])
+
+    with app.app_context():
+        init_reconhecimento_facial()
 
     return app

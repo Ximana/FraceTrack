@@ -1,3 +1,4 @@
+from flask import current_app # Para importar o contexto da app
 import os
 import face_recognition
 import pickle
@@ -31,14 +32,13 @@ class ReconhecimentoFacial:
         return rgb_img
 
     def treinar_modelo(self):
-        img_dir = "app/static/img/pessoasDesaparecidas/testeIMG/A"
-        ml_dir = "app/static/ml"
+        img_dir = "app/static/img/pessoasDesaparecidas/"
+        ml_dir = "app/static/ml/"
 
         os.makedirs(ml_dir, exist_ok=True)
 
         for filename in os.listdir(img_dir):
             if filename.lower().endswith((".jpg", ".jpeg", ".png", ".bmp")):
-                name = os.path.splitext(filename)[0]
                 img_path = os.path.join(img_dir, filename)
 
                 try:
@@ -47,18 +47,18 @@ class ReconhecimentoFacial:
 
                     if face_encodings:
                         self.known_face_encodings.append(face_encodings[0])
-                        self.known_face_names.append(name)
+                        self.known_face_names.append(filename)  # Use o nome completo do arquivo
                         print(f"Processado: {filename}")
                     else:
-                        print(f"Sem rosto emcontrado {filename}")
+                        print(f"Sem rosto encontrado em {filename}")
                 except Exception as e:
-                    print(f"Error processing {filename}: {str(e)}")
+                    print(f"Erro ao processar {filename}: {str(e)}")
 
         model_data: Tuple[List[List[float]], List[str]] = (self.known_face_encodings, self.known_face_names)
         with open(os.path.join(ml_dir, "facial_recognition_model.pkl"), "wb") as f:
             pickle.dump(model_data, f)
 
-        print(f"Model trained with {len(self.known_face_names)} faces and saved to {ml_dir}")
+        print(f"Modelo treinado com {len(self.known_face_names)} faces e salvo em {ml_dir}")
 
     def reconhecer(self, frame):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -73,14 +73,13 @@ class ReconhecimentoFacial:
                 first_match_index = matches.index(True)
                 name = self.known_face_names[first_match_index]
 
-                img_nome = name + ".jpg"
-                print(f"O nome e: {img_nome}")
-
                 # Salvar a imagem
-                img_path = self.save_detected_image(frame, name)
+                imagem_capturada = self.save_detected_image(frame, name)
+                print(f"Nome da imagem/face: {name}")
+                print(f"Nome da imagem detetada: {imagem_capturada}")
 
                 # Salvar o registro na base de dados
-                self.save_detection(name, img_path)
+                self.save_detection(name, imagem_capturada)
 
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
             cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
@@ -91,20 +90,24 @@ class ReconhecimentoFacial:
         output_dir = "app/static/img/pessoasDetetadas/"
         os.makedirs(output_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{name}_{timestamp}.jpg"
+        filename = f"{name.split('.')[0]}_{timestamp}.jpg"
         img_path = os.path.join(output_dir, filename)
         cv2.imwrite(img_path, frame)
-        return img_path
+        return filename
 
-    def save_detection(self, name, img_path):
-        pessoa = PessoaDesaparecida.query.filter_by(imagem=name).first()
-        if pessoa:
-            detecao = Deteccao(
-                pessoa_id=pessoa.id,
-                imagem_capturada=os.path.relpath(img_path, "app/static"),
-                localizacao="Câmera local"  # Você pode ajustar isso conforme necessário
-            )
-            db.session.add(detecao)
-            db.session.commit()
-        else:
-            print(f"Pessoa não encontrada no banco de dados: {name}")
+    def save_detection(self, name, imagem_capturada):
+        with current_app.app_context():
+            pessoa = PessoaDesaparecida.query.filter_by(imagem=name).first()
+            if pessoa:
+                detecao = Deteccao(
+                    pessoa_id=pessoa.id,
+                    imagem_capturada=imagem_capturada,
+                    localizacao="Câmera local"
+                )
+                db.session.add(detecao)
+                db.session.commit()
+                print(f"Detecção salva para a pessoa: {pessoa.nome}")
+            else:
+                print(f"Pessoa não encontrada no banco de dados: {name}")
+
+                
