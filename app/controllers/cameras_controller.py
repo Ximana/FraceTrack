@@ -1,6 +1,6 @@
 # app/controllers/cameras_controller.py
 
-from flask import Blueprint, render_template, Response
+from flask import Blueprint, render_template, Response, current_app
 import cv2
 import logging
 from app.models.reconhecimento_facial import ReconhecimentoFacial
@@ -30,7 +30,9 @@ def gen_frames():
             logger.error("Erro ao ler o frame")
             break
         else:
-            frame = reconhecimento_facial.reconhecer(frame)
+            # Processar o frame dentro de um contexto de aplicação
+            with current_app.app_context():
+                frame = reconhecimento_facial.reconhecer(frame)
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()

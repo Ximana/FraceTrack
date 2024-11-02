@@ -79,7 +79,8 @@ class ReconhecimentoFacial:
                 print(f"Nome da imagem detetada: {imagem_capturada}")
 
                 # Salvar o registro na base de dados
-                self.save_detection(name, imagem_capturada)
+                with current_app.app_context():
+                    self.save_detection(name, imagem_capturada)
 
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
             cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
@@ -110,4 +111,3 @@ class ReconhecimentoFacial:
             else:
                 print(f"Pessoa não encontrada no banco de dados: {name}")
 
-                
